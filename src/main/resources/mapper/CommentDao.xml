@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.imooc.dao.CommentDao">
+    <insert id="insertComment">
+        <if test="ordersId != null and ordersId != ''">
+            INSERT INTO comment(orders_id, star, content) VALUES (#{ordersId},#{star},#{content})
+        </if>
+    </insert>
+
+    <select id="queryByPage" resultType="Comment">
+        SELECT id,orders_id,star,content FROM comment
+    </select>
+</mapper>

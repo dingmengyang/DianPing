@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!-- 配置文件上传解析器 ,获取MultipartResolver时需获取WebApplicationContext，于是需要从ServletContext获取，
+	从root路径获取-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--指定上传文件总大小-->
+        <property name="maxUploadSize" value="20000000"/>
+        <property name="defaultEncoding" value="utf-8"/>
+    </bean>
+</beans>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.imooc.dao.SyncDao">
+    <insert id="insertData">
+        INSERT INTO synctime (sync_time) VALUES (#{syncTime})
+    </insert>
+
+    <select id="queryLast" resultType="String">
+        SELECT sync_time FROM synctime WHERE id=(SELECT MAX(id) FROM synctime)
+    </select>
+</mapper>

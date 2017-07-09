@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.imooc.dao.OrderDao">
+    <insert id="add">
+        INSERT INTO orders (member_id, business_id, num, price)
+        VALUES (#{memberId},#{businessId},#{num},#{price})
+    </insert>
+
+    <select id="getMemberId">
+        SELECT member_id FROM orders WHERE id=#{id}
+    </select>
+
+    <update id="updateState">
+        UPDATE orders SET comment_state=1 WHERE id=#{id}
+    </update>
+
+    <select id="queryByPage" resultType="Order">
+        SELECT id,member_id,business_id,num,price,comment_state,create_time FROM orders
+    </select>
+
+</mapper>

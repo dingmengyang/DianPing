@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.imooc.dao.AdDao">
+
+    <insert id="insert">
+        INSERT INTO ad(title,img_file_name,link,weight)
+        VALUES (#{title},#{imgFileName},#{link},#{weight})
+    </insert>
+
+    <select id="queryByPage" resultType="Ad">
+        SELECT id,title,img_file_name,link,weight FROM ad
+        <where>
+            <if test="title!=null and !&quot;&quot;.equals(title.trim())">
+                title like '%' #{title} '%'
+            </if>
+        </where>
+        ORDER BY weight DESC ,id
+    </select>
+
+    <delete id="deleteOne">
+        DELETE FROM ad WHERE id=#{id}
+    </delete>
+
+    <select id="queryById" resultType="Ad">
+        SELECT id,title,img_file_name,link,weight FROM ad WHERE id=#{id}
+    </select>
+
+    <update id="updateOne">
+        UPDATE ad SET title=#{title},img_file_name=#{imgFileName},link=#{link},weight=#{weight}
+        WHERE id=#{id}
+    </update>
+</mapper>

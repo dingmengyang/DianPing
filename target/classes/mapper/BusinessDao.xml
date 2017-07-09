@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.imooc.dao.BusinessDao">
+
+    <resultMap type="Business" id="BusinessResultMap">
+        <id column="id" property="id" />
+        <result column="img_file_name" property="imgFileName" />
+        <result column="title" property="title" />
+        <result column="subtitle" property="subtitle" />
+        <result column="price" property="price" />
+        <result column="distance" property="distance" />
+        <result column="number" property="number" />
+        <result column="desc" property="desc" />
+        <result column="city" property="city" />
+        <result column="category" property="category" />
+        <result column="star_total_num" property="star" />
+        <result column="comment_total_num" property="commentTotalNum" />
+        <association property="cityDic" javaType="Dic">
+            <result column="city_name" property="name"/>
+        </association>
+        <association property="categoryDic" javaType="Dic">
+            <result column="category_name" property="name"/>
+        </association>
+    </resultMap>
+
+    <select id="queryById" resultType="Business">
+        SELECT id,img_file_name,title,subtitle,price,distance,mumber,star,`desc`,city,category
+        FROM business WHERE id=#{id}
+   </select>
+
+    <select id="queryByPage" resultMap="BusinessResultMap">
+        select b.id,b.img_file_name,b.title,b.subtitle,b.price
+        ,b.distance,b.mumber,b.`desc`,b.city,b.category,b.star
+        ,d_city.name city_name,d_category.name category_name
+        from business b
+        left join dic d_city on b.city=d_city.code and
+        d_city.type='${@com.imooc.constant.DicTypeConstant@CITY}'
+        left join dic d_category on
+        b.category=d_category.code and d_category.type='${@com.imooc.constant.DicTypeConstant@CATEGORY}'
+        <where>
+            <if test="title != null and title != ''">
+                and b.title like '%' #{title} '%'
+            </if>
+            <if test="subtitle != null and subtitle != ''">
+                and b.subtitle like '%' #{subtitle} '%'
+            </if>
+            <if test="desc != null and desc != ''">
+                and b.`desc` like '%' #{desc} '%'
+            </if>
+            <if test="city != null and city != ''">
+                and b.city = #{city}
+            </if>
+            <if test="category != null and category != ''">
+                and b.category = #{category}
+            </if>
+        </where>
+        order by id
+    </select>
+
+    <select id="searchByPage" resultType="Business">
+        SELECT id,img_file_name,title,subtitle,price,distance,mumber,star,`desc`,city,category
+        FROM business
+        <where>
+            <if test="title != null and title != ''
+			 and subtitle != null and subtitle != ''
+			 and desc != null and desc != ''">
+                and
+                (title like '%' #{title} '%' or subtitle like '%' #{subtitle} '%' or `desc` like '%' #{desc} '%')
+            </if>
+            <if test="city != null and city != ''">
+                and city = #{city}
+            </if>
+            <if test="category != null and category != ''">
+                and category = #{category}
+            </if>
+        </where>
+        order by id
+    </select>
+
+    <insert id="insert">
+        INSERT INTO business(img_file_name,title,subtitle,price,distance,mumber,star,`desc`,city,category)
+        VALUES (#{imgFileName},#{title},#{subtitle},#{price},#{distance},#{mumber},#{star},#{desc},#{city},#{category})
+    </insert>
+
+    <delete id="deleteOne">
+        DELETE FROM business WHERE id=#{id}
+    </delete>
+
+    <update id="updateOne">
+        UPDATE business SET img_file_name=#{imgFileName},title=#{title},subtitle=#{subtitle},price=#{price},
+        distance=#{distance},mumber=#{mumber},star=#{star},`desc`=#{desc},city=#{city},category=#{category}
+    </update>
+
+    <!--更新已售数量-->
+    <update id="updateNumber">
+        UPDATE business AS b,(SELECT business_id,COUNT(*) AS cou FROM orders GROUP BY business_id) AS o
+        SET b.mumber=b.mumber+o.cou WHERE b.id=o.business_id AND o.create_time>#{date}
+    </update>
+
+    <update id="updateStar">
+        UPDATE business SET star=#{star}
+    </update>
+</mapper>
